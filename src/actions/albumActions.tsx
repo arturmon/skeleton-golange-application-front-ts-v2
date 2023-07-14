@@ -26,7 +26,7 @@ export const fetchAlbums = () => async (dispatch: ThunkDispatch<RootState, unkno
     try {
         dispatch({ type: FETCH_ALBUMS_REQUEST });
 
-        const response = await axios.get('http://localhost:10000/v1/albums');
+        const response = await axios.get('http://localhost:10000/v1/albums', { withCredentials: true });
         console.log(response.data);
         const { data } = response;
 

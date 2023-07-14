@@ -46,21 +46,25 @@ const HomeScreen = () => {
             return <p>Error: {albumState.error}</p>;
         } else {
             return (
-                <table>
+                <table className="table">
                     <thead>
                     <tr>
+                        <th>Code</th>
                         <th>Title</th>
                         <th>Artist</th>
                         <th>Price</th>
+                        <th>completed</th>
                         <th>Description</th>
                     </tr>
                     </thead>
                     <tbody>
                     {albumState.albums.map((album: Album) => (
                         <tr key={album._id}>
+                            <td>{album.code}</td>
                             <td>{album.title}</td>
                             <td>{album.artist}</td>
                             <td>{album.price}</td>
+                            <td>{album.completed ? 'true' : 'false'}</td>
                             <td>{album.description}</td>
                         </tr>
                     ))}
