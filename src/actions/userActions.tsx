@@ -24,7 +24,8 @@ export const login = (email: string, password: string): ThunkAction<Promise<void
 
         if (response.ok) {
             const data = await response.json();
-            const userData = { email: data.email };
+            //const userData = { email: data.email };
+            const userData = { email: email };
 
             dispatch({
                 type: USER_LOGIN_SUCCESS,
