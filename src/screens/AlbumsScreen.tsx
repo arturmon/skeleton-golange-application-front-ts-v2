@@ -20,7 +20,6 @@ const AlbumsScreen = () => {
     const [error, setError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState(false);
 
-    const [showModal, setShowModal] = useState(false);
     const [title, setTitle] = useState('');
     const [artist, setArtist] = useState('');
     const [price, setPrice] = useState('');
