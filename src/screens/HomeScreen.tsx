@@ -11,16 +11,13 @@ import {composeWithDevTools} from "redux-devtools-extension";
 import {AppThunkDispatch} from "../actions/userActions";
 
 
-
 const HomeScreen = () => {
     const dispatch = useDispatch<ThunkDispatch<RootState, null, AnyAction>>();
     const userLogin = useSelector<RootState, UserState>((state) => state.userLogin);
-    //const albumState = useSelector<RootState, AlbumState>((state) => state.albumState); // Access the album state
     const albumState = useSelector((state: RootState) => state.albumState);
 
     const { userInfo } = userLogin;
     const email = userInfo ? userInfo.email : null;
-
 
     useEffect(() => {
         const fetchAlbumsAction = async () => {

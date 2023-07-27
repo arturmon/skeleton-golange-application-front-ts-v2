@@ -18,7 +18,7 @@ interface FetchAlbumsRequest {
 
 interface FetchAlbumsSuccess {
     type: typeof FETCH_ALBUMS_SUCCESS;
-    payload: Album[]; // Assume Album is the type of your album
+    payload: Album[] | Album; // Check the payload type to handle both single and multiple albums
 }
 
 interface FetchAlbumsFail {
@@ -52,9 +52,9 @@ export const albumReducer = (state = initialState, action: AlbumActionTypes): In
         case FETCH_ALBUMS_SUCCESS:
             return {
                 loading: false,
-                albums: action.payload,
-                error: ''
-            }
+                albums: Array.isArray(action.payload) ? action.payload : [action.payload], // Ensure payload is always an array
+                error: '',
+            };
         case FETCH_ALBUMS_FAIL:
             return {
                 loading: false,

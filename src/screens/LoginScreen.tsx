@@ -20,7 +20,7 @@ const LoginScreen = () => {
     const { userInfo } = userLogin
 
     useEffect(() => {
-        if (userInfo !== undefined && userInfo.email) {
+        if (userInfo?.email) {
             navigate('/')
         }
     }, [userInfo, navigate])
@@ -63,4 +63,4 @@ const LoginScreen = () => {
     )
 }
 
-export default LoginScreen
+export default LoginScreen;

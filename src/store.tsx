@@ -1,11 +1,13 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from "redux-thunk";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {userLoginReducer} from "./reducers/userReducers";
+import {userLoginReducer, userLogoutReducer, userFetchReducer } from "./reducers/userReducers";
 import { albumReducer } from './reducers/albumReducers';
 
 const reducers = combineReducers({
     userLogin: userLoginReducer,
+    userFetch: userFetchReducer,
+    userLogout: userLogoutReducer,
     albumState: albumReducer
 })
 
