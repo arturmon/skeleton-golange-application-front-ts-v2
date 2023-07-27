@@ -1,14 +1,11 @@
 import { ThunkDispatch } from 'redux-thunk';
-import {AnyAction, applyMiddleware, combineReducers, createStore} from 'redux';
+import {AnyAction} from 'redux';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
-import {userLoginReducer, UserState} from '../reducers/userReducers';
+import { UserState} from '../reducers/userReducers';
 import { fetchAlbums } from '../actions/albumActions';
 import React, { useEffect } from 'react';
-import {albumReducer, AlbumState} from '../reducers/albumReducers'; // Import the AlbumState interface
 import { Album } from '../actions/albumActions';
-import {composeWithDevTools} from "redux-devtools-extension";
-import {AppThunkDispatch} from "../actions/userActions";
 
 
 const HomeScreen = () => {

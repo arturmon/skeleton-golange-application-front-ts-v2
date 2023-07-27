@@ -32,8 +32,7 @@ export const login = (email: string, password: string): ThunkAction<Promise<void
         });
 
         if (response.ok) {
-            const data = await response.json();
-            //const userData = { email: data.email };
+//            const data = await response.json();
             const userData = { email: email };
 
             dispatch({
@@ -84,7 +83,7 @@ export const register = (email: string, name: string, password: string): ThunkAc
         });
 
         if (response.ok) {
-            const data = await response.json();
+//            const data = await response.json();
             const userData = { email: email };
 
             dispatch({

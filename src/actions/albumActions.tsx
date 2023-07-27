@@ -1,7 +1,6 @@
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { RootState } from '../store';
-import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import {
     FETCH_ALBUMS_REQUEST,
@@ -101,7 +100,7 @@ export const deleteAlbumByCode = (code: string) => async (
 
         const response = await axios.delete(`http://localhost:10000/v1/albums/delete/${code}`, { withCredentials: true });
         console.log(response.data);
-        const { data } = response;
+//        const { data } = response;
 
 
     } catch (error) {

@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect } from "react";
+import { SyntheticEvent } from "react";
 import { Container, Nav, Navbar, Dropdown } from 'react-bootstrap';
 import { logout } from "../actions/userActions";
 import { UserState } from '../reducers/userReducers'
@@ -20,15 +20,7 @@ const Header = () => {
         e.preventDefault();
         await dispatch(logout()); // Await the logout action creator
     };
-/*
-    useEffect(() => {
-        if (userInfo) {
-            navigate('/'); // Redirect to the home page
-        }
-    }, [userInfo, navigate]);
 
-
- */
     const navigateToHome = () => {
         navigate('/'); // Navigate to the home page
     };

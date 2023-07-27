@@ -1,8 +1,8 @@
 import { SyntheticEvent, useState, useEffect } from 'react';
-import { Form, Button, Modal, Table } from 'react-bootstrap';
+import { Form, Button, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { addAlbum, Album, findAlbumByCode, fetchAlbums,deleteAlbumByCode } from '../actions/albumActions';
+import { addAlbum, Album, fetchAlbums,deleteAlbumByCode } from '../actions/albumActions';
 import { UserState } from '../reducers/userReducers';
 import { AppThunkDispatch } from '../actions/userActions';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
@@ -27,14 +27,6 @@ const AlbumsScreen = () => {
     const [code, setCode] = useState('');
     const [description, setDescription] = useState('');
     const [completed, setCompleted] = useState(false);
-
-    const handleShowModal = () => {
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -74,8 +66,6 @@ const AlbumsScreen = () => {
         setCode('');
         setDescription('');
         setCompleted(false);
-
-        handleCloseModal();
 
         // Navigate to HomeScreen after creating the album
         navigate('/');
@@ -119,23 +109,6 @@ const AlbumsScreen = () => {
     const handleCloseDeleteModal = () => {
         setShowDeleteModal(false);
     };
-
-    const [codeInput, setCodeInput] = useState('');
-    const [fetchedAlbum, setFetchedAlbum] = useState<Album | null>(null);
-
-    const handleFetchAlbum = async (e: SyntheticEvent) => {
-        e.preventDefault();
-
-        try {
-            await dispatch(findAlbumByCode(codeInput));
-        } catch (error) {
-            // Handle the error (e.g., display an error message)
-        }
-    };
-
-    const albumData = useSelector<RootState, Album[] | null>(
-        (state: RootState) => state.albumState.albums || null
-    );
 
     const handleCloseErrorModal = () => {
         setShowErrorModal(false);
