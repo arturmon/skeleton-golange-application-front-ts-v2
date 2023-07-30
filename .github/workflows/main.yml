@@ -53,15 +53,11 @@ jobs:
           sarif_file: results.sarif
  
   docker:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     needs: docker-check-vulnerabilities
     steps:
       - uses: actions/checkout@v3
-
-
-
-
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -79,6 +75,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: arturmon/albums-front:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/albums-front:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
