@@ -1,5 +1,4 @@
-
-: Master Branch
+name: Master Branch
 
 on:
   push:
