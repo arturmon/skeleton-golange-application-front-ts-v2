@@ -1,4 +1,5 @@
--name: Master Branch
+
+name: Master Branch
 
 on:
   push:
@@ -14,6 +15,7 @@ on:
 
 jobs:
   build:
+    name: builds
     runs-on: ubuntu-latest
 
     strategy:
