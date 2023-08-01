@@ -21,7 +21,7 @@ export const login = (email: string, password: string): ThunkAction<Promise<void
             type: USER_LOGIN_REQUEST,
         });
 
-        const response = await fetch('http://localhost:10000/v1/login', {
+        const response = await fetch('http://localhost:10000/v1/users/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -57,7 +57,7 @@ export const logout = (): ThunkAction<Promise<void>, RootState, unknown, AnyActi
     localStorage.removeItem('userInfo');
     dispatch({ type: USER_LOGOUT });
 
-    await fetch('http://localhost:10000/v1/logout', {
+    await fetch('http://localhost:10000/v1/users/logout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -71,7 +71,7 @@ export const register = (email: string, name: string, password: string): ThunkAc
             type: USER_REGISTER_REQUEST,
         });
 
-        const response = await fetch('http://localhost:10000/v1/register', {
+        const response = await fetch('http://localhost:10000/v1/users/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -136,7 +136,7 @@ export const getUserData = (): ThunkAction<Promise<void>, RootState, unknown, An
 export const deleteUser = (email: string): ThunkAction<Promise<void>, RootState, unknown, AnyAction> => async (dispatch: AppThunkDispatch) => {
     try {
         // Make the API call to delete the user
-        const response = await fetch('http://localhost:10000/v1/deleteUser', {
+        const response = await fetch('http://localhost:10000/v1/users/delete', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
