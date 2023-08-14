@@ -17,7 +17,7 @@ const LoginScreen = () => {
     const userLogin = useSelector<RootState, UserState>(
         (state: RootState) => state.userLogin
     )
-    const { userInfo } = userLogin
+    const { userInfo, error } = userLogin
 
     useEffect(() => {
         if (userInfo?.email) {
@@ -59,6 +59,12 @@ const LoginScreen = () => {
                     Submit
                 </Button>
             </Form>
+
+            {error && (
+                <div className={`alert alert-danger ${error ? 'fade-in' : ''}`}>
+                    {error}
+                </div>
+            )}
         </FormContainer>
     )
 }

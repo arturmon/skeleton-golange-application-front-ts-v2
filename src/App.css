@@ -2,3 +2,11 @@ main {
     margin-top: 3rem;
     height: 75vh;
 }
+.alert.alert-danger {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.alert.alert-danger.fade-in {
+    opacity: 1;
+}
