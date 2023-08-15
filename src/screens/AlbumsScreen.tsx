@@ -140,10 +140,21 @@ const AlbumsScreen = () => {
             {email ? (
                 <>
                     <h1>Welcome {email} to Create Albums</h1>
-                    {/* Create Album button */}
-                    <Button onClick={handleShowCreateModal}>Create Album</Button>
-                    {/* Delete Album button */}
-                    <Button variant="danger" onClick={handleShowDeleteModal}>Delete Album</Button>
+                    <p>basic album commands</p>
+                    <div className="row">
+                        <div className="col-md-2">
+                            {/* Create Album button */}
+                            <Button variant="success" className="btn-block" onClick={handleShowCreateModal}>
+                                Create New Album
+                            </Button>
+                        </div>
+                        <div className="col-md-2">
+                            {/* Delete Album button */}
+                            <Button variant="danger" className="btn-block" onClick={handleShowDeleteModal}>
+                                Delete Album
+                            </Button>
+                        </div>
+                    </div>
 
 
                     {/* Create Album Modal */}
@@ -209,13 +220,14 @@ const AlbumsScreen = () => {
                                         onChange={handleInputChange}
                                     />
                                 </Form.Group>
-                                <Button variant="primary" type="submit">
-                                    Submit
-                                </Button>
+
                             </Form>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={handleCloseCreateModal}>
+                            <Button variant="success" type="submit">
+                                Submit
+                            </Button>
+                            <Button variant="primary" onClick={handleCloseCreateModal}>
                                 Close
                             </Button>
                         </Modal.Footer>
@@ -238,11 +250,11 @@ const AlbumsScreen = () => {
                             </Form>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={handleCloseDeleteModal}>
-                                Close
-                            </Button>
                             <Button variant="danger" onClick={handleDeleteFormSubmit}>
                                 Delete
+                            </Button>
+                            <Button variant="primary" onClick={handleCloseDeleteModal}>
+                                Close
                             </Button>
                         </Modal.Footer>
                     </Modal>

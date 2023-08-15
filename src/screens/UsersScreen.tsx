@@ -72,6 +72,18 @@ const UsersScreen = () => {
                 <p>Please log in or sign up to view this page.</p>
             ) : (
         <div>
+            {/* Display error message if there is an error fetching user data */}
+            {error && <p>Error: {error}</p>}
+
+            {/* Display user data if available */}
+            {userData && (
+                <div>
+                    <h1>User current Information</h1>
+                    <p>Name: {userData.name}</p>
+                    <p>Email: {userData.email}</p>
+                </div>
+            )}
+
             <h1>Create New User</h1>
 
             <Form onSubmit={handleSubmit}>
@@ -102,23 +114,14 @@ const UsersScreen = () => {
                         onChange={handleInputChange}
                     />
                 </Form.Group>
+                <p></p>
                 <Button variant="primary" type="submit">
                     Create User
                 </Button>
             </Form>
-
-            {/* Display error message if there is an error fetching user data */}
-            {error && <p>Error: {error}</p>}
-
-            {/* Display user data if available */}
-            {userData && (
-                <div>
-                    <h2>User current Information</h2>
-                    <p>Name: {userData.name}</p>
-                    <p>Email: {userData.email}</p>
-                </div>
-            )}
+            <p></p>
             <Form>
+                <h2>delete user</h2>
                 <Form.Group controlId="deleteEmail">
                     <Form.Label>Enter Email to Delete User</Form.Label>
                     <Form.Control
@@ -128,6 +131,7 @@ const UsersScreen = () => {
                         onChange={handleDeleteEmailChange}
                     />
                 </Form.Group>
+                <p></p>
                 <Button variant="danger" onClick={handleDeleteUser}>
                     Delete User
                 </Button>
