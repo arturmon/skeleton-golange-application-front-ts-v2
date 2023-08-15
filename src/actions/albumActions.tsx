@@ -20,6 +20,7 @@ export interface Album {
     completed: boolean;
 }
 
+
 export const fetchAlbums = () => async (dispatch: ThunkDispatch<RootState, unknown, AnyAction>) => {
     console.log('fetchAlbumsAction running');
     try {
@@ -68,6 +69,33 @@ export const addAlbum = (albumData: Album) => async (
         });
     }
 };
+
+export const updateAlbums = (updatedAlbumData: Album | null) => async (dispatch: ThunkDispatch<RootState, unknown, AnyAction>) => {
+    console.log('updateAlbums action running');
+    try {
+        dispatch({ type: FETCH_ALBUMS_REQUEST });
+
+        const response = await axios.post('http://localhost:10000/v1/album/update', updatedAlbumData, {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const { data } = response;
+
+        dispatch({
+            type: FETCH_ALBUMS_SUCCESS,
+            payload: data, // Update state with the updated album data
+        });
+    } catch (error) {
+        dispatch({
+            type: FETCH_ALBUMS_FAIL,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        });
+    }
+};
+
 
 export const findAlbumByCode = (code: string) => async (dispatch: ThunkDispatch<RootState, unknown, AnyAction>) => {
     console.log('findAlbumByCode action running');

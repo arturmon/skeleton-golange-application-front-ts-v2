@@ -1,12 +1,11 @@
-import { ThunkDispatch } from 'redux-thunk';
-import {AnyAction} from 'redux';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../store';
-import { UserState} from '../reducers/userReducers';
-import { fetchAlbums } from '../actions/albumActions';
-import React, { useEffect } from 'react';
-import { Album } from '../actions/albumActions';
-
+import React, { useState, useEffect } from "react";
+import { Modal, Table, Button, Form } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
+import { AnyAction } from "redux";
+import { RootState } from "../store";
+import { fetchAlbums, updateAlbums, Album } from "../actions/albumActions";
+import { UserState } from "../reducers/userReducers";
 
 const HomeScreen = () => {
     const dispatch = useDispatch<ThunkDispatch<RootState, null, AnyAction>>();
@@ -16,65 +15,236 @@ const HomeScreen = () => {
     const { userInfo } = userLogin;
     const email = userInfo ? userInfo.email : null;
 
+    const [editingAlbum, setEditingAlbum] = useState<Album | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    const [sortCriteria, setSortCriteria] = useState<string>('code'); // Set default sort by code
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Default: ascending
+
+
     useEffect(() => {
-        const fetchAlbumsAction = async () => {
-            try {
-                await dispatch(fetchAlbums());
-            } catch (error) {
-                console.error(error); // Log the error
-            }
-        };
         if (email) {
-            fetchAlbumsAction();
+            dispatch(fetchAlbums());
         }
     }, [dispatch, email]);
 
-    console.log(albumState); // Log the albumState
+    const openModal = (album: Album) => {
+        setEditingAlbum({ ...album });
+        setShowModal(true);
+    };
 
-    // Render a loading message, error message, or the albums table
-    const renderContent = () => {
-        console.log(albumState); // Log the albumState again here
-        if (albumState.loading) {
-            return <p>Loading albums...</p>;
-        } else if (albumState.error) {
-            return <p>Error: {albumState.error}</p>;
-        } else {
-            return (
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Title</th>
-                        <th>Artist</th>
-                        <th>Price</th>
-                        <th>completed</th>
-                        <th>Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {albumState.albums.map((album: Album) => (
-                        <tr key={album._id}>
-                            <td>{album.code}</td>
-                            <td>{album.title}</td>
-                            <td>{album.artist}</td>
-                            <td>{album.price}</td>
-                            <td>{album.completed ? 'true' : 'false'}</td>
-                            <td>{album.description}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            );
+    const closeModal = () => {
+        setShowModal(false);
+        setEditingAlbum(null);
+        setErrorMessage(null);
+    };
+
+    const validateAlbum = (albumData: Album | null): boolean => {
+        if (!albumData) {
+            return false; // Return false for null albums
+        }
+        if (!albumData.title || !albumData.artist || !albumData.code) {
+            // Check for required fields: title, artist, and code
+            return false;
+        }
+        if (typeof albumData.price !== 'number' || albumData.price <= 0) {
+            // Check if price is a valid positive number
+            return false;
+        }
+        if (typeof albumData.completed !== 'boolean') {
+            // Check if completed is a valid boolean
+            return false;
+        }
+        // Other validation checks for your album data
+        // ...
+        return true; // All validation checks passed
+    };
+
+    const updateAlbum = async (updatedAlbum: Album | null) => {
+        try {
+            if (validateAlbum(updatedAlbum)) {
+                await dispatch(updateAlbums(updatedAlbum));
+                closeModal();
+
+                // Fetch albums again after updating to refresh the list
+                await dispatch(fetchAlbums());
+            }
+        } catch (error) {
+            console.error(error);
         }
     };
 
-    return email ? (
-        <>
-            <h1>Welcome {email} to the Album App</h1>
-            {renderContent()}
-        </>
-    ) : (
-        <h1>Welcome to the Album App</h1>
+    const updateAlbumField = (field: string, value: string | number | boolean) => {
+        if (editingAlbum) {
+            setEditingAlbum((prevEditingAlbum) => {
+                if (prevEditingAlbum) {
+                    return {
+                        ...prevEditingAlbum,
+                        [field]: value,
+                    };
+                }
+                return prevEditingAlbum;
+            });
+        }
+    };
+
+    const handleSort = (criteria: string) => {
+        if (sortCriteria === criteria) {
+            // Toggle sort order if same criteria clicked again
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            // Set new criteria and default ascending order
+            setSortCriteria(criteria);
+            setSortOrder('asc');
+        }
+    };
+
+
+    // Filtered and sorted albums
+    const sortedAlbums = [...albumState.albums].sort((a, b) => {
+        if (sortCriteria === 'title') {
+            return a.title.localeCompare(b.title) * (sortOrder === 'asc' ? 1 : -1);
+        }
+        if (sortCriteria === 'artist') {
+            return a.artist.localeCompare(b.artist) * (sortOrder === 'asc' ? 1 : -1);
+        }
+        if (sortCriteria === 'price') {
+            return (a.price - b.price) * (sortOrder === 'asc' ? 1 : -1);
+        }
+        // Add more criteria for other columns if needed
+        return 0;
+    });
+
+
+    return (
+        <div>
+            {email ? (
+                <>
+                    <h1 className="text-center">Welcome {email} to the Album App</h1>
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-12">
+                                {albumState.loading ? (
+                                    <p>Loading albums...</p>
+                                ) : albumState.error ? (
+                                    <p>Error: {albumState.error}</p>
+                                ) : albumState.albums.length === 0 ? (
+                                    <p>No albums available.</p>
+                                ) : (
+                                    <Table striped bordered hover>
+                                        <thead>
+                                        <tr>
+                                            <th onClick={() => handleSort('code')}>
+                                                Code
+                                                {sortCriteria === 'code' && <span>{sortOrder === 'asc' ? '↑' : '↓'}</span>}
+                                            </th>
+                                            <th onClick={() => handleSort('title')}>
+                                                Title
+                                                {sortCriteria === 'title' && <span>{sortOrder === 'asc' ? '↑' : '↓'}</span>}
+                                            </th>
+                                            <th onClick={() => handleSort('artist')}>
+                                                Artist
+                                                {sortCriteria === 'artist' && <span>{sortOrder === 'asc' ? '↑' : '↓'}</span>}
+                                            </th>
+                                            <th onClick={() => handleSort('price')}>
+                                                Price
+                                                {sortCriteria === 'price' && <span>{sortOrder === 'asc' ? '↑' : '↓'}</span>}
+                                            </th>
+                                            <th>Completed</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {sortedAlbums.map((album: Album) => (
+                                            <tr key={album._id}>
+                                                <td>{album.code}</td>
+                                                <td>{album.title}</td>
+                                                <td>{album.artist}</td>
+                                                <td>{album.price}</td>
+                                                <td>{album.completed ? "Yes" : "No"}</td>
+                                                <td>{album.description}</td>
+                                                <td>
+                                                    <Button variant="info" onClick={() => openModal(album)}>
+                                                        Edit
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </Table>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    <Modal show={showModal} onHide={closeModal}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Edit Album</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            {errorMessage && <p className="text-danger">{errorMessage}</p>}
+                            <Form>
+                                <Form.Group controlId="title">
+                                    <Form.Label>Title</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        value={editingAlbum?.title || ""}
+                                        onChange={(e) => updateAlbumField("title", e.target.value)}
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="artist">
+                                    <Form.Label>Artist</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        value={editingAlbum?.artist || ""}
+                                        onChange={(e) => updateAlbumField("artist", e.target.value)}
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="price">
+                                    <Form.Label>Price</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        value={editingAlbum?.price || ""}
+                                        onChange={(e) => updateAlbumField("price", parseFloat(e.target.value))}
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="code">
+                                    <Form.Label>Code</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        value={editingAlbum?.code || ""}
+                                        onChange={(e) => updateAlbumField("code", e.target.value)}
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="description">
+                                    <Form.Label>Description</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        value={editingAlbum?.description || ""}
+                                        onChange={(e) => updateAlbumField("description", e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Form>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={closeModal}>
+                                Cancel
+                            </Button>
+                            <Button variant="primary" type="button" onClick={(e) => {
+                                e.preventDefault(); // Prevent the default form submission
+                                updateAlbum(editingAlbum);
+                            }}>
+                                Save
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                </>
+            ) : (
+                <h1 className="text-center">Welcome to the Album App</h1>
+            )}
+        </div>
     );
 };
 
