@@ -78,3 +78,27 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/albums-front:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  Deploy:
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    environment: ${{ vars.ENVIRONMENT_STAGE }}
+    needs: Clean-old-Deploy
+    steps:
+      - name: Deploy to Staging server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.REMOTE_HOST }}
+          port: 22
+          username: ${{ secrets.REMOTE_USER }}
+          script: |
+            echo "======VERSION======"
+            podman version
+            echo "======INFO========="
+            podman info
+            echo "======DEPLOY======="
+            podman pod create --name albums -p 3000:3000
+            
+            podman run --pod albums --privileged --name albums-front \
+            -d docker.io/arturmon/albums-front:latest
