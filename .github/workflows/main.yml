@@ -98,7 +98,13 @@ jobs:
             echo "======INFO========="
             podman info
             echo "======DEPLOY======="
-            podman pod create --name albums -p 3000:3000
+            # Check if the pod 'albums' exists, and if not, create it
+            podman pod exists albums || podman pod create --name albums -p 3000:3000
+            
+            # Check if the container 'albums-front' is running
+            if podman container exists albums-front; then
+            podman rm -f albums-front
+            fi
             
             podman run --pod albums --privileged --name albums-front \
             -d docker.io/arturmon/albums-front:latest
