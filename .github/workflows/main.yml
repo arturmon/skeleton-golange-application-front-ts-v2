@@ -104,6 +104,7 @@ jobs:
             # Check if the container 'albums-front' is running
             if podman container exists albums-front; then
             podman rm -f albums-front
+            podman image rm docker.io/arturmon/albums-front:latest
             fi
             
             podman run --pod albums --privileged --name albums-front \
