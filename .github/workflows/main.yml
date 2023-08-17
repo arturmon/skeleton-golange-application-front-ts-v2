@@ -83,7 +83,7 @@ jobs:
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     environment: ${{ vars.ENVIRONMENT_STAGE }}
-    needs: Clean-old-Deploy
+    needs: docker
     steps:
       - name: Deploy to Staging server
         uses: appleboy/ssh-action@v1.0.0
