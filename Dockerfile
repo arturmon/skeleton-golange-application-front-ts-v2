@@ -2,7 +2,8 @@ FROM node:18.17.0
 LABEL authors="Artur Mudrukh"
 
 WORKDIR /usr/src/app 
-COPY package*.json ./ 
+COPY package*.json ./
+COPY public ./public
 RUN npm install --only=production 
 COPY ./src .src
 USER node
