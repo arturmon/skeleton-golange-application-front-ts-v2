@@ -1,16 +1,9 @@
-FROM node:20.5.1-buster-slim
-LABEL authors="Artur Mudrukh"
+FROM node:alpine AS build_stage
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
+COPY . .
+RUN npm run build
 
-ENV NODE_ENV production
-
-WORKDIR /usr/src/app
-COPY --chown=node:node . /usr/src/app
-RUN npm ci --only=production \
-    && npm cache clean --force
-USER node
-
-EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=3s \
-    CMD wget -qO- http://localhost:3000/ || exit 1
-
-CMD ["npm", "start"]
+FROM nginx
+COPY --from=build_stage /app/build /usr/share/nginx/html
