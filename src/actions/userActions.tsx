@@ -65,7 +65,7 @@ export const logout = (): ThunkAction<Promise<void>, RootState, unknown, AnyActi
 };
 
 // Register action
-export const register = (email: string, name: string, password: string): ThunkAction<Promise<void>, RootState, unknown, AnyAction> => async (dispatch: AppThunkDispatch) => {
+export const register = (email: string, name: string, password: string, role: string): ThunkAction<Promise<void>, RootState, unknown, AnyAction> => async (dispatch: AppThunkDispatch) => {
     try {
         dispatch({
             type: USER_REGISTER_REQUEST,
@@ -79,6 +79,7 @@ export const register = (email: string, name: string, password: string): ThunkAc
                 email,
                 name,
                 password,
+                role,
             }),
         });
 
@@ -106,7 +107,7 @@ export const register = (email: string, name: string, password: string): ThunkAc
 // New action to fetch user data
 export const getUserData = (): ThunkAction<Promise<void>, RootState, unknown, AnyAction> => async (dispatch: AppThunkDispatch) => {
     try {
-        const response = await fetch('http://localhost:10000/v1/user', {
+        const response = await fetch('http://localhost:10000/v1/users/me', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',

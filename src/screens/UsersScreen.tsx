@@ -8,6 +8,7 @@ const UsersScreen = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('');
 
     const dispatch = useDispatch<AppThunkDispatch>();
 
@@ -36,6 +37,8 @@ const UsersScreen = () => {
             setEmail(value);
         } else if (name === 'password') {
             setPassword(value);
+        } else if (name === 'role') {
+            setRole(value);
         }
     };
 
@@ -43,12 +46,13 @@ const UsersScreen = () => {
         e.preventDefault();
 
         // Call the register action with the form data
-        await dispatch(register(email, name, password));
+        await dispatch(register(email, name, password, role));
 
         // Clear the form input values
         setName('');
         setEmail('');
         setPassword('');
+        setRole('');
     };
 
 
@@ -81,12 +85,22 @@ const UsersScreen = () => {
                     <h1>User current Information</h1>
                     <p>Name: {userData.name}</p>
                     <p>Email: {userData.email}</p>
+                    <p>Role: {userData.role}</p>
                 </div>
             )}
 
             <h1>Create New User</h1>
 
             <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="email">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                        type="email"
+                        name="email"
+                        value={email}
+                        onChange={handleInputChange}
+                    />
+                </Form.Group>
                 <Form.Group controlId="name">
                     <Form.Label>Name</Form.Label>
                     <Form.Control
@@ -96,12 +110,12 @@ const UsersScreen = () => {
                         onChange={handleInputChange}
                     />
                 </Form.Group>
-                <Form.Group controlId="email">
-                    <Form.Label>Email</Form.Label>
+                <Form.Group controlId="role">
+                    <Form.Label>Role</Form.Label>
                     <Form.Control
-                        type="email"
-                        name="email"
-                        value={email}
+                        type="text"
+                        name="role"
+                        value={role}
                         onChange={handleInputChange}
                     />
                 </Form.Group>
