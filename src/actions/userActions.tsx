@@ -65,7 +65,7 @@ export const logout = (): ThunkAction<Promise<void>, RootState, unknown, AnyActi
 };
 
 // Register action
-export const register = (email: string, name: string, password: string, role: string): ThunkAction<Promise<void>, RootState, unknown, AnyAction> => async (dispatch: AppThunkDispatch) => {
+export const register = (email: string, name: string, password: string, role: string): ThunkAction<Promise<Response>, RootState, unknown, AnyAction> => async (dispatch: AppThunkDispatch) => {
     try {
         dispatch({
             type: USER_REGISTER_REQUEST,
@@ -84,15 +84,15 @@ export const register = (email: string, name: string, password: string, role: st
         });
 
         if (response.ok) {
-//            const data = await response.json();
-            const userData = { email: email };
+            const data = await response.json();
 
             dispatch({
                 type: USER_REGISTER_SUCCESS,
-                payload: userData,
+                payload: data, // Pass the entire data object
             });
 
-            localStorage.setItem('userInfo', JSON.stringify(userData));
+            localStorage.setItem('userInfo', JSON.stringify(data));
+            return response; // Return the response object
         } else {
             throw new Error('Registration failed'); // Handle specific error scenarios
         }
@@ -101,8 +101,10 @@ export const register = (email: string, name: string, password: string, role: st
             type: USER_REGISTER_FAIL,
             payload: error.response && error.response.data.message ? error.response.data.message : error.message,
         });
+        throw error; // Rethrow the error
     }
 };
+
 
 // New action to fetch user data
 export const getUserData = (): ThunkAction<Promise<void>, RootState, unknown, AnyAction> => async (dispatch: AppThunkDispatch) => {

@@ -50,7 +50,7 @@ export const addAlbum = (albumData: Album) => async (
     try {
         dispatch({ type: FETCH_ALBUMS_REQUEST });
 
-        const response = await axios.post('http://localhost:10000/v1/album', albumData, {
+        const response = await axios.post('http://localhost:10000/v1/albums/add', albumData, {
             withCredentials: true,
         });
         console.log(response.data);
@@ -75,7 +75,7 @@ export const updateAlbums = (updatedAlbumData: Album | null) => async (dispatch:
     try {
         dispatch({ type: FETCH_ALBUMS_REQUEST });
 
-        const response = await axios.post('http://localhost:10000/v1/album/update', updatedAlbumData, {
+        const response = await axios.post('http://localhost:10000/v1/albums/update', updatedAlbumData, {
             withCredentials: true,
             headers: {
                 'Content-Type': 'application/json',
