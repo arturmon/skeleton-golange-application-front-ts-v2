@@ -4,12 +4,12 @@ import { logout } from "../actions/userActions";
 import { UserState } from '../reducers/userReducers'
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { AppThunkDispatch } from "../actions/userActions"; // Import AppThunkDispatch
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { AppThunkDispatch } from "../actions/userActions";
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
-    const dispatch = useDispatch<AppThunkDispatch>(); // Use AppThunkDispatch type
-    const navigate = useNavigate(); // Initialize useNavigate
+    const dispatch = useDispatch<AppThunkDispatch>();
+    const navigate = useNavigate();
 
     const userLogin = useSelector<RootState, UserState>(
         (state: RootState) => state.userLogin
@@ -18,11 +18,12 @@ const Header = () => {
 
     const logoutHandler = async (e: SyntheticEvent) => {
         e.preventDefault();
-        await dispatch(logout()); // Await the logout action creator
+        await dispatch(logout());
+        navigate('/'); // Redirect to the home page after logout
     };
 
     const navigateToHome = () => {
-        navigate('/'); // Navigate to the home page
+        navigate('/');
     };
 
     const navigateToCreateAlbum = () => {
@@ -55,7 +56,6 @@ const Header = () => {
                         </Nav>
                     ) : (
                         <Nav className="ms-auto">
-                            <Nav.Link href="/signup">Sign Up</Nav.Link>
                             <Nav.Link href="/login">Login</Nav.Link>
                         </Nav>
                     )}

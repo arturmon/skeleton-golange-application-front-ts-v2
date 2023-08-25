@@ -85,16 +85,14 @@ export const register = (email: string, name: string, password: string, role: st
 
         if (response.ok) {
             const data = await response.json();
-
             dispatch({
                 type: USER_REGISTER_SUCCESS,
                 payload: data, // Pass the entire data object
             });
-
             localStorage.setItem('userInfo', JSON.stringify(data));
             return response; // Return the response object
         } else {
-            throw new Error('Registration failed'); // Handle specific error scenarios
+            throw new Error(response.statusText); // Handle specific error scenarios
         }
     } catch (error) {
         dispatch({
