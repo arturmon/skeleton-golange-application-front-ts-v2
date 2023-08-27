@@ -5,16 +5,21 @@ import {
 } from '../constants/albumConstants';
 
 // Assuming you have a type or interface for Album
+export interface Price {
+    number: number;
+    currency: string;
+};
+
 export interface Album {
-    _id: string;
-    created_at: string;
-    updated_at: string;
+    _id?: string;
+    created_at?: string;
+    updated_at?: string;
     title: string;
     artist: string;
-    price: number;
+    price: Price;
     code: string;
     description: string;
-    completed: boolean;
+    _creator_user?: string;
 }
 
 interface FetchAlbumsRequestAction {

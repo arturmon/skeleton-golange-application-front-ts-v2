@@ -2,7 +2,8 @@ import { SyntheticEvent, useState, useEffect } from 'react';
 import { Form, Button, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { addAlbum, Album, fetchAlbums,deleteAlbumByCode } from '../actions/albumActions';
+import { addAlbum, fetchAlbums,deleteAlbumByCode } from '../actions/albumActions';
+import { Album, Price } from "../actions/albumActionTypes";
 import { UserState } from '../reducers/userReducers';
 import { AppThunkDispatch } from '../actions/userActions';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
@@ -22,10 +23,9 @@ const AlbumsScreen = () => {
 
     const [title, setTitle] = useState('');
     const [artist, setArtist] = useState('');
-    const [price, setPrice] = useState('');
+    const [priceValue, setPriceValue] = useState('');
     const [code, setCode] = useState('');
     const [description, setDescription] = useState('');
-    const [completed, setCompleted] = useState(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -35,14 +35,12 @@ const AlbumsScreen = () => {
         } else if (name === 'artist') {
             setArtist(value);
         } else if (name === 'price') {
-            setPrice(value);
+            setPriceValue(value);
         } else if (name === 'code') {
             setCode(value);
         } else if (name === 'description') {
             setDescription(value);
-        } else if (name === 'completed') {
-            setCompleted(e.target.checked);
-        }
+        } // Add this closing curly brace
     };
 
     const handleCreateAlbum = async (e: SyntheticEvent) => {
@@ -51,20 +49,21 @@ const AlbumsScreen = () => {
         const newAlbum: Album = {
             title,
             artist,
-            price: parseFloat(price),
+            price: {
+                number: parseFloat(priceValue),
+                currency: 'USD', // Or whatever currency you're using
+            },
             code,
             description,
-            completed,
         };
 
         await dispatch(addAlbum(newAlbum));
 
         setTitle('');
         setArtist('');
-        setPrice('');
+        setPriceValue('');
         setCode('');
         setDescription('');
-        setCompleted(false);
 
         // Navigate to HomeScreen after creating the album
         navigate('/');
@@ -188,7 +187,7 @@ const AlbumsScreen = () => {
                                     <Form.Control
                                         type="text"
                                         name="price"
-                                        value={price}
+                                        value={priceValue}
                                         onChange={handleInputChange}
                                     />
                                 </Form.Group>
@@ -208,15 +207,6 @@ const AlbumsScreen = () => {
                                         rows={3}
                                         name="description"
                                         value={description}
-                                        onChange={handleInputChange}
-                                    />
-                                </Form.Group>
-                                <Form.Group controlId="completed">
-                                    <Form.Check
-                                        type="checkbox"
-                                        label="Completed"
-                                        name="completed"
-                                        checked={completed}
                                         onChange={handleInputChange}
                                     />
                                 </Form.Group>

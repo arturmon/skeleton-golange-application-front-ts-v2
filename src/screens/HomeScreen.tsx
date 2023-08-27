@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { RootState } from "../store";
-import { fetchAlbums, updateAlbums, Album } from "../actions/albumActions";
+import { fetchAlbums, updateAlbums } from "../actions/albumActions";
+import { Album, Price } from "../actions/albumActionTypes";
 import { UserState } from "../reducers/userReducers";
 
 const HomeScreen = () => {
@@ -41,6 +42,7 @@ const HomeScreen = () => {
     };
 
     const validateAlbum = (albumData: Album | null): boolean => {
+        console.log(albumData);
         if (!albumData) {
             return false; // Return false for null albums
         }
@@ -48,12 +50,8 @@ const HomeScreen = () => {
             // Check for required fields: title, artist, and code
             return false;
         }
-        if (typeof albumData.price !== 'number' || albumData.price <= 0) {
+        if (typeof albumData.price.number !== 'number' || albumData.price.number <= 0) {
             // Check if price is a valid positive number
-            return false;
-        }
-        if (typeof albumData.completed !== 'boolean') {
-            // Check if completed is a valid boolean
             return false;
         }
         // Other validation checks for your album data
@@ -110,7 +108,7 @@ const HomeScreen = () => {
             return a.artist.localeCompare(b.artist) * (sortOrder === 'asc' ? 1 : -1);
         }
         if (sortCriteria === 'price') {
-            return (a.price - b.price) * (sortOrder === 'asc' ? 1 : -1);
+            return (a.price.number - b.price.number) * (sortOrder === 'asc' ? 1 : -1);
         }
         // Add more criteria for other columns if needed
         return 0;
@@ -151,7 +149,6 @@ const HomeScreen = () => {
                                                 Price
                                                 {sortCriteria === 'price' && <span>{sortOrder === 'asc' ? '↑' : '↓'}</span>}
                                             </th>
-                                            <th>Completed</th>
                                             <th>Description</th>
                                             <th>Action</th>
                                         </tr>
@@ -162,8 +159,7 @@ const HomeScreen = () => {
                                                 <td>{album.code}</td>
                                                 <td>{album.title}</td>
                                                 <td>{album.artist}</td>
-                                                <td>{album.price}</td>
-                                                <td>{album.completed ? "Yes" : "No"}</td>
+                                                <td>{`${album.price.number} ${album.price.currency}`}</td>
                                                 <td>{album.description}</td>
                                                 <td>
                                                     <Button variant="info" onClick={() => openModal(album)}>
@@ -204,8 +200,8 @@ const HomeScreen = () => {
                                 <Form.Group controlId="price">
                                     <Form.Label>Price</Form.Label>
                                     <Form.Control
-                                        type="number"
-                                        value={editingAlbum?.price || ""}
+                                        type="text"
+                                        value={editingAlbum?.price.number.toString() || ""}
                                         onChange={(e) => updateAlbumField("price", parseFloat(e.target.value))}
                                     />
                                 </Form.Group>
