@@ -5,7 +5,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { RootState } from "../store";
 import { fetchAlbums, updateAlbums } from "../actions/albumActions";
-import { Album, Price } from "../actions/albumActionTypes";
+import { Album } from "../actions/albumActionTypes";
 import { UserState } from "../reducers/userReducers";
 
 const HomeScreen = () => {
@@ -126,6 +126,9 @@ const HomeScreen = () => {
 
     // Filtered and sorted albums
     const sortedAlbums = [...albumState.albums].sort((a, b) => {
+        if (sortCriteria === 'code') {
+            return a.title.localeCompare(b.title) * (sortOrder === 'asc' ? 1 : -1);
+        }
         if (sortCriteria === 'title') {
             return a.title.localeCompare(b.title) * (sortOrder === 'asc' ? 1 : -1);
         }
@@ -210,7 +213,7 @@ const HomeScreen = () => {
                             <div className="row">
                                 <div className="col-md-6"> {/* Adjust the column width here */}
                                     <div className="form-group">
-                                        <select className="form-control" value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                                        <select className="form-control form-control-sm" value={itemsPerPage} onChange={handleItemsPerPageChange}>
                                             <option value={10}>10 per page</option>
                                             <option value={20}>20 per page</option>
                                             <option value={50}>50 per page</option>
