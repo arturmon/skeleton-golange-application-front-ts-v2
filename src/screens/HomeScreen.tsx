@@ -77,10 +77,28 @@ const HomeScreen = () => {
         }
     };
 
-    const updateAlbumField = (field: string, value: string | number | boolean) => {
+    const updateAlbumField = (field: string, value: number | string | boolean) => {
         if (editingAlbum) {
             setEditingAlbum((prevEditingAlbum) => {
                 if (prevEditingAlbum) {
+                    if (field === 'price') {
+                        return {
+                            ...prevEditingAlbum,
+                            price: {
+                                number: typeof value === 'number' ? value : prevEditingAlbum.price.number,
+                                currency: prevEditingAlbum.price.currency,
+                            },
+                        };
+                    }
+                    if (field === 'currency') {
+                        return {
+                            ...prevEditingAlbum,
+                            price: {
+                                number: prevEditingAlbum.price.number,
+                                currency: value as string,
+                            },
+                        };
+                    }
                     return {
                         ...prevEditingAlbum,
                         [field]: value,
@@ -90,6 +108,9 @@ const HomeScreen = () => {
             });
         }
     };
+
+
+
 
     const handleSort = (criteria: string) => {
         if (sortCriteria === criteria) {
@@ -242,14 +263,35 @@ const HomeScreen = () => {
                                         onChange={(e) => updateAlbumField("artist", e.target.value)}
                                     />
                                 </Form.Group>
+
                                 <Form.Group controlId="price">
                                     <Form.Label>Price</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        value={editingAlbum?.price.number.toString() || ""}
-                                        onChange={(e) => updateAlbumField("price", parseFloat(e.target.value))}
-                                    />
+                                    <div className="input-group">
+                                        <Form.Control
+                                            type="number"
+                                            className="form-control"
+                                            value={editingAlbum?.price.number.toString() || ""}
+                                            onChange={(e) => updateAlbumField("price", parseFloat(e.target.value))}
+                                        />
+                                        <div className="input-group-append">
+                                            <span className="input-group-text">{editingAlbum?.price.currency}</span>
+                                        </div>
+                                    </div>
                                 </Form.Group>
+                                <Form.Group controlId="currency">
+                                    <Form.Label>Currency</Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        value={editingAlbum?.price.currency || ""}
+                                        onChange={(e) => updateAlbumField("currency", e.target.value)}
+                                    >
+                                        <option value="USD">USD</option>
+                                        <option value="EUR">EUR</option>
+                                        <option value="GBP">GBP</option>
+                                        {/* Add other currency options as needed */}
+                                    </Form.Control>
+                                </Form.Group>
+
                                 <Form.Group controlId="code">
                                     <Form.Label>Code</Form.Label>
                                     <Form.Control
