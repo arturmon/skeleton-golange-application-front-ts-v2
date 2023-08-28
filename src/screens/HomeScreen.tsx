@@ -23,6 +23,10 @@ const HomeScreen = () => {
     const [sortCriteria, setSortCriteria] = useState<string>('code'); // Set default sort by code
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Default: ascending
 
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    const [currentPage, setCurrentPage] = useState(1); // Initialize to 1
+
 
     useEffect(() => {
         if (email) {
@@ -114,13 +118,23 @@ const HomeScreen = () => {
         return 0;
     });
 
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, sortedAlbums.length);
+    const displayedAlbums = sortedAlbums.slice(startIndex, endIndex);
+
+    const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const newItemsPerPage = parseInt(event.target.value, 10);
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset current page to 1 when items per page changes
+    };
 
     return (
         <div>
             {email ? (
                 <>
                     <h1 className="text-center">Welcome {email} to the Album App</h1>
-                    <div className="container">
+                    {/* Dropdown to select items per page */}
+                    <div className="container table-container">
                         <div className="row">
                             <div className="col-md-12">
                                 {albumState.loading ? (
@@ -130,7 +144,7 @@ const HomeScreen = () => {
                                 ) : albumState.albums.length === 0 ? (
                                     <p>No albums available.</p>
                                 ) : (
-                                    <Table striped bordered hover>
+                                    <Table striped bordered hover className="table  table-sm">
                                         <thead>
                                         <tr>
                                             <th onClick={() => handleSort('code')}>
@@ -154,7 +168,7 @@ const HomeScreen = () => {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {sortedAlbums.map((album: Album) => (
+                                        {displayedAlbums.map((album: Album) => (
                                             <tr key={album._id}>
                                                 <td>{album.code}</td>
                                                 <td>{album.title}</td>
@@ -171,6 +185,37 @@ const HomeScreen = () => {
                                         </tbody>
                                     </Table>
                                 )}
+                            </div>
+                            <div className="row">
+                                <div className="col-md-6"> {/* Adjust the column width here */}
+                                    <div className="form-group">
+                                        <select className="form-control" value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                                            <option value={10}>10 per page</option>
+                                            <option value={20}>20 per page</option>
+                                            <option value={50}>50 per page</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="col-md-6"> {/* Adjust the column width here */}
+                                    <div className="d-flex justify-content-end">
+                                        <div className="btn-group" role="group" aria-label="Basic example">
+                                            <button
+                                                className="btn btn-primary"
+                                                disabled={currentPage === 1}
+                                                onClick={() => setCurrentPage(currentPage - 1)}
+                                            >
+                                                Previous Page
+                                            </button>
+                                            <button
+                                                className="btn btn-primary"
+                                                disabled={startIndex + itemsPerPage >= sortedAlbums.length}
+                                                onClick={() => setCurrentPage(currentPage + 1)}
+                                            >
+                                                Next Page
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -10,3 +10,16 @@ main {
 .alert.alert-danger.fade-in {
     opacity: 1;
 }
+
+.table-container {
+    max-height: calc(100vh - 300px); /* Adjust the value as needed */
+    overflow-y: auto;
+}
+
+.footer {
+    background-color: #f8f9fa; /* Add your desired background color */
+    padding: 20px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
