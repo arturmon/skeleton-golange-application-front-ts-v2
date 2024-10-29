@@ -86,7 +86,7 @@ jobs:
     needs: docker
     steps:
       - name: Deploy to Staging server
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.1.0
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           host: ${{ secrets.REMOTE_HOST }}
