@@ -79,33 +79,33 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  Deploy:
-    if: ${{ github.event_name == 'push' }}
-    runs-on: ubuntu-latest
-    environment: ${{ vars.ENVIRONMENT_STAGE }}
-    needs: docker
-    steps:
-      - name: Deploy to Staging server
-        uses: appleboy/ssh-action@v1.1.0
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          host: ${{ secrets.REMOTE_HOST }}
-          port: 22
-          username: ${{ secrets.REMOTE_USER }}
-          script: |
-            echo "======VERSION======"
-            podman version
-            echo "======INFO========="
-            podman info
-            echo "======DEPLOY======="
+#  Deploy:
+#    if: ${{ github.event_name == 'push' }}
+#    runs-on: ubuntu-latest
+#    environment: ${{ vars.ENVIRONMENT_STAGE }}
+#    needs: docker
+#    steps:
+#      - name: Deploy to Staging server
+#        uses: appleboy/ssh-action@v1.1.0
+#        with:
+#          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          host: ${{ secrets.REMOTE_HOST }}
+#          port: 22
+#          username: ${{ secrets.REMOTE_USER }}
+#          script: |
+#            echo "======VERSION======"
+#            podman version
+#            echo "======INFO========="
+#            podman info
+#            echo "======DEPLOY======="
             # Check if the pod 'albums' exists, and if not, create it
-            podman pod exists albums || podman pod create --name albums -p 3000:3000
+#            podman pod exists albums || podman pod create --name albums -p 3000:3000
             
             # Check if the container 'albums-front' is running
-            if podman container exists albums-front; then
-            podman rm -f albums-front
-            podman image rm docker.io/arturmon/albums-front:latest
-            fi
+#            if podman container exists albums-front; then
+#            podman rm -f albums-front
+#            podman image rm docker.io/arturmon/albums-front:latest
+#            fi
             
-            podman run --pod albums --privileged --name albums-front \
-            -d docker.io/arturmon/albums-front:latest
+#            podman run --pod albums --privileged --name albums-front \
+#            -d docker.io/arturmon/albums-front:latest
